@@ -1,3 +1,4 @@
+# [UNDER CONSTRUCTION - TESTING ONGOING]
 # VEDirect Library for Arduino
 
 This library handles reading VE.Direct TEXT frames from a hardware or software serial connection assuring data integrity with checksum calculation. 
