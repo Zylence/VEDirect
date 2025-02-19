@@ -43,3 +43,6 @@ Contributions are welcome, **especially testing on different architectures**. Fo
 ## Supports
 - ESP32
 - Potentially others
+
+## Note
+- You may need to install **EspSoftwareSerial** in order to check out the examples from the repo. 
