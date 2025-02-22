@@ -78,7 +78,7 @@ void VEDirect::read() {
 // https://www.victronenergy.com/live/vedirect_protocol:faq
 inline void VEDirect::parse() {
   // skip first two bytes
-  _buffer = _buffer + 2;
+  char* buffer_ptr = _buffer + 2;
   
   char* line;
   char* line_saveptr = NULL;
@@ -87,8 +87,8 @@ inline void VEDirect::parse() {
   char* label;
   char *value;
 
-  log(_buffer);
-  line = strtok_r(_buffer, "\n", &line_saveptr);
+  log(buffer_ptr);
+  line = strtok_r(buffer_ptr, "\n", &line_saveptr);
   // iterate lines
   while (line != NULL) {
 
