@@ -6,14 +6,17 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  SKETCHES_REPORTS_PATH: sketches-reports
+
 jobs:
   compile-sketches:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         platform:
-          - { arduino_platform: "arduino:avr", fqbn: "arduino:avr:uno" }
-          - { arduino_platform: "esp32:esp32", fqbn: "esp32:esp32:esp32" }
+          - { arduino_platform: "arduino:avr", fqbn: "arduino:avr:uno", artifact: "uno" }
+          - { arduino_platform: "esp32:esp32", fqbn: "esp32:esp32:esp32", artifact: "esp32" }
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -36,3 +39,9 @@ jobs:
         with:
           fqbn: ${{ matrix.platform.fqbn }}
           sketch-paths: examples/
+          enable-deltas-report: true
+          sketches-report-path: ${{ env.SKETCHES_REPORTS_PATH }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sketches-reports-${{ matrix.platform.artifact }}
+          path: ${{ env.SKETCHES_REPORTS_PATH }}
