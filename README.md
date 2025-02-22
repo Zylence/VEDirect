@@ -1,13 +1,14 @@
-# [UNDER CONSTRUCTION - TESTING ONGOING]
 # VEDirect Library for Arduino
 
 This library handles reading VE.Direct TEXT frames from a hardware or software serial connection assuring data integrity with checksum calculation. 
 
-## Features
+## Why use this library?
 - **Checksum Calculation**: Automatically calculates and validates checksums for received frames.
+- **Tested**: ![Build Status](https://github.com/Zylence/VEDirect/actions/workflows/ci.yml/badge.svg)
+ ![Coverage](https://codecov.io/gh/Zylence/VEDirect/branch/main/graph/badge.svg)
 - **Event-Driven**: Utilizes convenient callback functions to handle incoming data frames and logging messages.
 - **Configurable**: Checksum calculation can be opted out, buffer size can be set, callbacks can be changed at runtime.
-- **Flexibility**: You get to choose how you parse your value readings on a per label basis.
+- **Flexibility**: You get to choose how you use / convert your value readings on a per label basis.
 
 ## Usage Example
 
