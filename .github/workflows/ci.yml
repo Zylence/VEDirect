@@ -1,4 +1,4 @@
-name: CI - Build & Test
+name: CI - Build, Test & Coverage
 
 on:
   push:
@@ -12,14 +12,33 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install CMake and dependencies
-        run: sudo apt-get install -y cmake ninja-build g++
+      - name: Install dependencies
+        run: sudo apt-get install -y cmake ninja-build g++ lcov gcovr
 
-      - name: Configure CMake
-        run: cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug
+      - name: Clean Previous Coverage Data
+        run: find . -name "*.gcda" -exec rm -f {} +
 
-      - name: Build tests
-        run: cmake --build build
+      - name: Configure CMake with Coverage
+        run: |
+          cmake -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_CXX_FLAGS="--coverage" \
+            -DCMAKE_EXE_LINKER_FLAGS="--coverage"
 
-      - name: Run tests
+      - name: Build Tests
+        run: cmake --build build --clean-first
+
+      - name: Run Tests
         run: ctest --test-dir build --output-on-failure
+
+      - name: Capture Code Coverage
+        run: |
+          lcov --capture --directory build --output-file coverage.info --ignore-errors mismatch
+          lcov --remove coverage.info '/usr/*' '*/googletest/*' '*/tests/*' --output-file coverage.info
+          lcov --list coverage.info
+
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage.info
+          fail_ci_if_error: true
