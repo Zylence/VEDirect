@@ -1,0 +1,38 @@
+name: Arduino Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  compile-sketches:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform:
+          - { arduino_platform: "arduino:avr", fqbn: "arduino:avr:uno" }
+          - { arduino_platform: "esp32:esp32", fqbn: "esp32:esp32:esp32" }
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Arduino CLI
+        uses: arduino/setup-arduino-cli@v2
+
+      - name: Install platform
+        run: |
+          arduino-cli core update-index
+          arduino-cli core install ${{ matrix.platform.arduino_platform }}
+
+      - name: Install EspSoftwareSerial library for ESP32
+        if: contains(matrix.platform.arduino_platform, 'esp32')
+        run: |
+          arduino-cli lib install "EspSoftwareSerial"
+
+      - name: Compile Sketches
+        uses: arduino/compile-sketches@v1.1.2
+        with:
+          fqbn: ${{ matrix.platform.fqbn }}
+          sketch-paths: examples/
